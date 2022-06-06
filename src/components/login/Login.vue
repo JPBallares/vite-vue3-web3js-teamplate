@@ -1,6 +1,10 @@
 <script setup>
 import Web3 from "web3";
-import { onMounted } from "@vue/runtime-core";
+import { onMounted, ref } from "@vue/runtime-core";
+
+const userInfo = ref({});
+console.log(userInfo)
+const isConnected = ref(false);
 
 const detectCurrentProvider = () => {
   let provider;
@@ -51,22 +55,22 @@ const saveUserInfo = (ethBalance, account, chainId) => {
   console.log(userAccount);
   window.localStorage.setItem("userAccount", JSON.stringify(userAccount)); //user persisted data
   const userData = JSON.parse(localStorage.getItem("userAccount"));
-  setUserInfo(userData);
-  setIsConnected(true);
+  userInfo.value = userData;
+  isConnected.value = true;
 };
 
 const onDisconnect = () => {
   window.localStorage.removeItem("userAccount");
-  setUserInfo({});
-  setIsConnected(false);
+  userInfo.value = {};
+  isConnected.value = false;
 };
 
 onMounted(() => {
   function checkConnectedWallet() {
     const userData = JSON.parse(localStorage.getItem("userAccount"));
     if (userData != null) {
-      setUserInfo(userData);
-      setIsConnected(true);
+      userInfo.value = userData;
+      isConnected.value = true;
     }
   }
   checkConnectedWallet();
@@ -74,6 +78,7 @@ onMounted(() => {
 </script>
 <template>
   <div>
+    
     <button @click="onConnect">Login with Metamask</button>
   </div>
 </template>
